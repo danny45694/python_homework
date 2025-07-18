@@ -51,13 +51,17 @@ def data_type_conversion(value, conversion):
 
 def grade(*args):
     try:
-        total = 0
-        average = 0
-        total += sum(args)
-        numOfArgs = len(args)
-        average = total / numOfArgs
-    except ValueError:
-        print("Invalid data was provided")
+        for i in args:
+            if type(i) is not int:
+                total = 0
+                average = 0
+                total += sum(args)
+                numOfArgs = len(args)
+                average = total / numOfArgs
+    except (TypeError, ValueError):
+        return("Invalid data was provided")
+    
+
 
 # Task 6: Use a For Loop with a Range
 def repeat(string,count):
@@ -93,14 +97,17 @@ def titleize(sentence):
 #Task 9: Hangman, with more String Operations
 
 def hangman(secret, guess):
-    placeholder = ""
+    placeholder = "_"
+    letters = list(guess)
     display = []
-    word_length = len(secret)
-    for i in range(word_length):
-        if guess in secret:
-            display[i].append(guess)
+    for char in secret:
+        if char in letters:
+            display.append(char)
         else:
-            placeholder += "_"
-    return display
+            display.append(placeholder) 
+    return "".join(display)
 
-print(hangman("titles", "t"))
+print(hangman("alphabet", "ab"))
+
+#Task 10: Pig Latin. Another String Manipulation Exercise
+
