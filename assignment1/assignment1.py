@@ -50,40 +50,53 @@ def data_type_conversion(value, conversion):
 #Task 5: Grading System, Using args
 
 def grade(*args):
-    for i in args:
-        if not isinstance(i,(int,float)):
-            return("Invalid data was provided")
-        else:
-            total = 0
-            average = 0
-            total += sum(args)
-            numOfArgs = len(args)
-            average = total / numOfArgs
-            if average > 89:
-                return("Grade A")
-            elif average <= 89 and average >= 80:
-                return("Grade B")
-            elif average <= 79 and average >= 70:
-                return("Grade C")
-            elif average <= 69 and average >= 60:
-                return("Grade D")
-            elif average < 60:
-                return("Grade F")
+    try:
+        for i in args:
+            if not isinstance(i,(int,float)):
+                raise ValueError
+            
+        total += sum(args)
+        average = total / len(args)
+        if average > 89:
+            return("Grade A")
+        elif average <= 89 and average >= 80:
+            return("Grade B")
+        elif average <= 79 and average >= 70:
+            return("Grade C")
+        elif average <= 69 and average >= 60:
+            return("Grade D")
+        elif average < 60:
+             return("Grade F")
+        
+    except:
+        return "Invalid data was provided"
 
 print(grade(90,"nine",89,90,89))
 
 # Task 6: Use a For Loop with a Range
 def repeat(string,count):
+    print(string, count)
     returnString = ""
     for i in range(count):
-        returnString = string + string
+        returnString += string
     return returnString
+
+print(repeat("string", 3))
 
 # Task 7: Student Scores, Using Kwargs
 
-def student_scores(positional, **kwargs):
-    for key, value in kwargs.items():
-        pass
+def student_scores(mode, **kwargs):
+    if mode == "best":
+        bestStudent = max(kwargs, key=kwargs.get)
+        return bestStudent
+    elif mode == "mean":
+        total = sum(kwargs.values())
+        count = len(kwargs)
+        return total / count
+    else: 
+        return "Invalid mode"
+    
+print(student_scores("best", Alice=90, Bob=85, Charlie=95))
 
 # Task 8: Titleize, with String and List Operations
 def titleize(sentence):
@@ -120,3 +133,28 @@ print(hangman("alphabet", "ab"))
 
 #Task 10: Pig Latin. Another String Manipulation Exercise
 
+def pig_latin(string):
+    vowels = ["a", "e", "i", "o", "u"]
+    pigLatinWords = []
+    words = string.split()
+
+    for word in words:
+        if word[0] in vowels:
+            pig_word = word + "ay"
+        elif word.startswith("qu"):
+            pig_word = word[2:] + "quay"
+        else:
+            consonant_cluster = ""
+            i = 0
+            while i < len(word) and word[i] not in vowels:
+                if word[i:i+2] == "qu":
+                    consonant_cluster += "qu"
+                    i += 2
+                    break
+                consonant_cluster += word[i]
+                i += 1
+            pig_word = word[i:] + consonant_cluster + "ay"
+        
+        pigLatinWords.append(pig_word)
+
+    return " ".join(pigLatinWords)
