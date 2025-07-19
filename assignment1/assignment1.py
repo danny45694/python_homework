@@ -2,7 +2,7 @@
 
 # Task1: Hello
 def hello():
-    print("Hello!")
+    return("Hello!")
 
 
 # Task2: Greet with a Formatted String
@@ -50,18 +50,27 @@ def data_type_conversion(value, conversion):
 #Task 5: Grading System, Using args
 
 def grade(*args):
-    try:
-        for i in args:
-            if type(i) is not int:
-                total = 0
-                average = 0
-                total += sum(args)
-                numOfArgs = len(args)
-                average = total / numOfArgs
-    except (TypeError, ValueError):
-        return("Invalid data was provided")
-    
+    for i in args:
+        if not isinstance(i,(int,float)):
+            return("Invalid data was provided")
+        else:
+            total = 0
+            average = 0
+            total += sum(args)
+            numOfArgs = len(args)
+            average = total / numOfArgs
+            if average > 89:
+                return("Grade A")
+            elif average <= 89 and average >= 80:
+                return("Grade B")
+            elif average <= 79 and average >= 70:
+                return("Grade C")
+            elif average <= 69 and average >= 60:
+                return("Grade D")
+            elif average < 60:
+                return("Grade F")
 
+print(grade(90,"nine",89,90,89))
 
 # Task 6: Use a For Loop with a Range
 def repeat(string,count):
