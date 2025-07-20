@@ -7,20 +7,22 @@ def hello():
 
 # Task2: Greet with a Formatted String
 def greet(name):
-    print(f"Hello, {name}!")
+    return(f"Hello, {name}!")
 
-greet("Daniel")
+print(greet("James"))
 # Task3: Calculator
 
 def calc(num1, num2, operation="multiply"):
-    if num2 == 0:
-        return "You cannot divide by 0"
-    if type(num1) or type(num2) is str:
-        print("You cannot use letters")
+    if not isinstance(num1, (int,float)) or not isinstance(num2, (int, float)):
+        return "You can't multiply those values!"
+    
+    if num2 == 0 and operation == "divide":
+        return "You can't divide by 0!"
+    
     if operation == "add":
         return num1 + num2
     elif operation == "subtract":
-        return num1 + num2
+        return num1 - num2
     elif operation == "divide":
         return num1 / num2
     elif operation == "modulo":
@@ -34,18 +36,18 @@ def calc(num1, num2, operation="multiply"):
 
 #Task 4: Data Type Conversion
 def data_type_conversion(value, conversion):
-    try:
-        if conversion == float:
+    try:    
+        if conversion == "float":
             convertValue = float(value)
             return convertValue
-        elif conversion == str:
+        elif conversion == "str":
             convertValue = str(value)
             return convertValue
-        elif conversion == int:
-            convertValue == int(value)
+        elif conversion == "int":
+            convertValue = int(value)
             return convertValue
-    except TypeError:
-        print(f"You can't convert {value} into a {type}.")
+    except (ValueError, TypeError):
+        return f"You can't convert {value} into a {conversion}."    
 
 #Task 5: Grading System, Using args
 
