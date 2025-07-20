@@ -52,26 +52,22 @@ def data_type_conversion(value, conversion):
 #Task 5: Grading System, Using args
 
 def grade(*args):
-    try:
         for i in args:
             if not isinstance(i,(int,float)):
-                raise ValueError
+                return "Invalid data was provided."
             
-        total += sum(args)
-        average = total / len(args)
-        if average > 89:
-            return("Grade A")
-        elif average <= 89 and average >= 80:
-            return("Grade B")
-        elif average <= 79 and average >= 70:
-            return("Grade C")
-        elif average <= 69 and average >= 60:
-            return("Grade D")
-        elif average < 60:
-             return("Grade F")
+        average = sum(args) / len(args)
         
-    except:
-        return "Invalid data was provided"
+        if average > 89:
+            return("A")
+        elif average <= 89 and average >= 80:
+            return("B")
+        elif average <= 79 and average >= 70:
+            return("C")
+        elif average <= 69 and average >= 60:
+            return("D")
+        elif average < 60:
+             return("F")
 
 print(grade(90,"nine",89,90,89))
 
@@ -104,16 +100,27 @@ print(student_scores("best", Alice=90, Bob=85, Charlie=95))
 def titleize(sentence):
     little_words = ["a", "on","an","the","of","and","is","in"]
     string = sentence.split()
+    length = len(string)
     new_words = []
+    count = 0
     for word in string:
         if word in little_words:
-            modified_word = word.lower()
-            new_words.append(modified_word)
-        else:
+            if count == 0:
+                modified_word = word.capitalize()
+                new_words.append(modified_word)
+                count += 1
+            elif count == 1:
+                modified_word = word.lower()
+                new_words.append(modified_word)
+        if word not in little_words:
+            count = 1
             modified_word = word.capitalize()
             new_words.append(modified_word)
+    new_words[-1] = new_words[-1].capitalize()
     result = " ".join(new_words)
     return result
+
+print(titleize("after on"))
 
 #print(titleize("testing that this is working. a on an the of and" \
 #"is in"))
