@@ -34,5 +34,8 @@ def column_index(string):
     employee_id_column = employees["fields"].index(string) 
     return employee_id_column
 
-def first_name(rowNumber):
+print(column_index("employee_id"))
+
+
+# def first_name(rowNumber):
      
