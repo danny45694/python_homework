@@ -1,5 +1,7 @@
 import csv
 import traceback
+import os
+import custom_module
 
 #Task 2: Read a CSV File
 file_path = "C:/Users/danie/CTD/Python/python_homework/csv/employees.csv"
@@ -33,6 +35,7 @@ def read_employees():
 employees = read_employees()
 
 
+
 #Task 3: Find the Column Index
 def column_index(string):
     return employees["fields"].index(string) 
@@ -64,7 +67,84 @@ def employee_find_2(employee_id):
 #Task 7: Sort the Rows by last_name Using a Lambda
 def sort_by_last_name():
     last_names = column_index("last_name")
-    sorted_names = employees["rows"].sort(key=lambda row: row[last_names])
-    return sorted_names
+    employees["rows"].sort(key=lambda row: row[last_names])
+    return employees["rows"]
 
-print(sort_by_last_name())
+#Task 8: Create a dict for an Employee
+
+def employee_dict(row):
+    fields = employees["fields"][:]
+    fields.remove("employee_id")
+    row_values = row[1:]
+    employee_dict = dict(zip(fields, row_values))
+    return employee_dict
+
+#Task 9: A dict of dicts, for All Employees
+
+def all_employees_dict():
+    result = {}
+    for row in employees["rows"]:
+        employee_id = row[0]
+        result[employee_id] = employee_dict(row)
+    return result
+
+#Task 10: Use the os Module
+
+def get_this_value():
+    return os.getenv("THISVALUE")
+
+
+# Task11: Creating Your Own Module
+def set_that_secret(string):
+    custom_module.set_secret(string)
+
+#Task 12
+
+def read_csv_as_dict(file_path):
+    with open(file_path, "r") as file:
+        reader = csv.reader(file)
+        result = {"fields": [], "rows": []}
+        for i, row in enumerate(reader):
+            if i == 0:
+                result["fields"] = row
+            else:
+                result["rows"].append(tuple(row))  # convert list to tuple
+        return result
+
+
+def read_minutes():
+    m1 = read_csv_as_dict("../csv/minutes1.csv")
+    m2 = read_csv_as_dict("../csv/minutes2.csv")
+    return m1, m2
+
+minutes1, minutes2 = read_minutes()
+
+
+#Task 13: Create minutes_set
+
+def create_minutes_set():
+    set1 = set(minutes1["rows"])
+    set2 = set(minutes2["rows"])
+    combined = set1.union(set2)
+    return combined
+
+minutes_set = create_minutes_set()
+print(minutes_set)
+
+#Task 14: Convert to datetime
+from datetime import datetime
+
+def create_minutes_list():
+    data_list = list(minutes_set)
+    converted = map(lambda x: (x[0], datetime.strptime(x[1], "%B %d, %Y")), data_list)
+    return list(converted)
+minutes_list = create_minutes_list()
+print(minutes_list)
+
+
+#Task 15: Sort the Minutes List
+def sort_minutes_list():
+    return sorted(minutes_list, key=lambda x: x[1])
+
+sorted_minutes = sort_minutes_list()
+print(sorted_minutes)
