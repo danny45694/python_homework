@@ -2,6 +2,8 @@ import csv
 import traceback
 import os
 import custom_module
+import csv
+from datetime import datetime
 
 #Task 2: Read a CSV File
 file_path = "C:/Users/danie/CTD/Python/python_homework/csv/employees.csv"
@@ -98,7 +100,7 @@ def get_this_value():
 def set_that_secret(string):
     custom_module.set_secret(string)
 
-#Task 12
+#Task 12: Read minutes1.csv and minutes2.csv
 
 def read_csv_as_dict(file_path):
     with open(file_path, "r") as file:
@@ -129,22 +131,24 @@ def create_minutes_set():
     return combined
 
 minutes_set = create_minutes_set()
-print(minutes_set)
 
 #Task 14: Convert to datetime
-from datetime import datetime
 
 def create_minutes_list():
     data_list = list(minutes_set)
-    converted = map(lambda x: (x[0], datetime.strptime(x[1], "%B %d, %Y")), data_list)
-    return list(converted)
+    convert = map(lambda x: (x[0], datetime.strptime(x[1], "%B %d, %Y")), data_list)
+    return list(convert)
 minutes_list = create_minutes_list()
 print(minutes_list)
 
 
 #Task 15: Sort the Minutes List
-def sort_minutes_list():
-    return sorted(minutes_list, key=lambda x: x[1])
 
-sorted_minutes = sort_minutes_list()
-print(sorted_minutes)
+def write_sorted_list():
+    sorted_list = sorted(minutes_list, key=lambda x: x[1])
+    converted_list = list(map(lambda x: (x[0], x[1].strftime("%B %d, %Y")), sorted_list))
+    with open("./minutes.csv", "w", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(minutes1["fields"])
+        writer.writerows(converted_list)
+    return converted_list
