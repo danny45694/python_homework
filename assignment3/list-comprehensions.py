@@ -1,3 +1,5 @@
+import csv
+import traceback
 
 file_path = "C:/Users/danie/CTD/Python/python_homework/csv/employees.csv"
 
@@ -29,12 +31,10 @@ def read_employees():
 
 employees = read_employees()
 
+rows = employees.get("rows", [])
 
-with open("../csv/employees.csv", newLine="") as file:
-    rows = list(csv.reader(file))
-    names = [f"{row[0]} {row[1]}" for row in rows[1:]]
-    print("All Names:", names)
+names = [f"{row[0]} {row[1]}" for row in rows]
+print("All Names:", names)
 
-    names_with_e = [name for name in names if 'e' in name]
-    print("Names with 'e':", names_with_e)
-wait()
+names_with_e = [name for name in names if "e" in name.lower()]
+print("Names with 'e':", names_with_e)
