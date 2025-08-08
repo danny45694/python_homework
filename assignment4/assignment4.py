@@ -41,3 +41,26 @@ json_employees = pd.read.json("additional_employees.json")
 print(json_employees)
 
 more_employees = pd.concat([task2_employees, json_employees], ignore_index=True)
+
+first_three = more_employees.head(3)
+last_two = more_employees.last(2)
+employee_shape = more_employees.shape
+
+more_employees.info()
+
+dirty_data = pd.read_csv('dirty_data.csv')
+
+clean_data = dirty_data.copy(deep=True).drop_duplicates()
+clean_data['Age'] = pd.to_numeric(dirty_data['Age'], errors='coerce')
+clean_data['Salary'] = clean_data['Salary'].replace(['unknown', 'n/a'], np.nan)
+clean_data['Salary'] = pd.to_numeric(clean_data['Salary'], errors='coerce')
+
+clean_data['Age'] = clean_data['Age'].fillna(clean_data['Age'].mean())
+clean_data['Salary'] = clean_data['Salary'].fillna(clean_data['Salary'].median())
+
+
+clean_data['Hire Date'] = pd.to_datetime(clean_data['Hire Date'], errors='coerce')
+
+clean_data['Name'] = clean_data['Name'].str.strip().str.upper()
+clean_data['Department'] = clean_data['Department'].str.strip().str.upper()
+
