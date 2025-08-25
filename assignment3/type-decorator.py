@@ -1,15 +1,19 @@
 
 
 def type_converter(type_of_output):
-    x = func(*args, **kwargs)
-    return type_of_output(x)
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            x = func(*args, **kwargs)
+            return type_of_output(x)
+        return wrapper
+    return decorator
 
 
-@type_converter
+@type_converter(str)
 def return_int():
     return 5
 
-@type_converter
+@type_converter(int)
 def return_string():
     return "not a number"
 
