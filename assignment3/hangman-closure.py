@@ -1,26 +1,28 @@
 def make_hangman(secret_word):
-    guesses = []
-    display = ["_"] * len(secret_word)
+    guesses = []   
+    
+    def hangman_closure(letter):
+        nonlocal guesses
+        guesses.append(letter)
+        
+        
+        revealed = ''.join(ch if ch in guesses else '_' for ch in secret_word)
+        print(revealed)
+        
+      
+        if '_' not in revealed:
+            print("You guessed the word!")
+            return True
+        else:
+            return False
+    
+    return hangman_closure
 
-    def hangman_closure():
-        while "_" in display:
-            print("Current word: " + " ".join(display))
-            letter = input("Guess a letter: ").lower()
+secret_word = input("Enter a secret word: ")
+game = make_hangman(secret_word)
 
-            if not letter or len(letter) != 1:
-                print("Please guess a single letter.")
-                continue
-
-            guesses.append(letter)
-
-            for i, char in enumerate(secret_word):
-                if char == letter:
-                    display[i] = char
-
-            if "_" not in display:
-                print("You won! The word was:", secret_word)
-                break
-
-    hangman_closure()
-
-make_hangman("google")
+while True:
+    letter = input("Guess a letter: ")
+    done = game(letter)
+    if done:
+        break
