@@ -106,9 +106,21 @@ except Exception as e:
     print(f"An unexpected error occurred: {e}")
 
 
-cursor.execute("SELECT * FROM subscribers")
-cursor.execute("SELECT * FROM magazines ORDER BY name DESC")
+all_info_subscribers = ("SELECT * FROM subscribers")
+retrieve_magazines = ("SELECT * FROM magazines ORDER BY name DESC")
 
-subscriber_table = cursor.fetchall()
-for row in result:
-     print(row)
+join_task = ("""
+               SELECT magazine.magazine_id, magazine.name,AS magazine_name, magazine.topic 
+               FROM magazines 
+               JOIN publishers p ON magazine.publisher_id = publisher.publisher.id 
+               WHERE publisher.name = ?;
+               
+               """)
+
+cursor.execute(all_info_subscribers)
+cursor.execute(retrieve_magazines)
+cursor.execute(join_task("O'Reilly"))
+results = cursor.fetchall()
+
+for row in results:
+    print(row)
