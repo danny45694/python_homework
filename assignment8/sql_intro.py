@@ -1,83 +1,114 @@
 import sqlite3
 
-
-def add_publishers(cursor, publisher_id, name, topic):
+# ---------------- ADD FUNCTIONS ----------------
+def add_publisher(cursor, publisher_id, name):
     try:
-        cursor.execute("INSERT INTO publishers (publisher_id, name, topic) VALUES (?,?,?)", 
-                       (publisher_id, name, topic))
+        cursor.execute(
+            "INSERT INTO publishers (publisher_id, name) VALUES (?, ?)", 
+            (publisher_id, name)
+        )
     except sqlite3.IntegrityError:
         print(f"{name} is already in the database")    
 
-def add_magazines(cursor, magazine_id, name, topic):
+
+def add_magazine(cursor, magazine_id, name, publisher_id, topic):
     try: 
-        cursor.execute("INSERT INTO magazines (magazine_id, name, topic) VALUES (?,?,?)", 
-                       (magazine_id, name, topic))
+        cursor.execute(
+            "INSERT INTO magazines (magazine_id, name, publisher_id, topic) VALUES (?,?,?,?)", 
+            (magazine_id, name, publisher_id, topic)
+        )
     except sqlite3.IntegrityError:
         print(f"{name} is already in the database")   
 
-def add_subscribers(cursor, subscribers_id, name, num_of_subscribers, topic):
+
+def add_subscriber(cursor, subscriber_id, name, address):
     try:
-        cursor.execute("INSERT INTO subscribers (subscribers_id, name, num_of_subscribers, topic) VALUES (?,?,?)", 
-                       (subscribers_id, name, num_of_subscribers, topic))
+        cursor.execute(
+            "INSERT INTO subscribers (subscriber_id, name, address) VALUES (?,?,?)", 
+            (subscriber_id, name, address)
+        )
     except sqlite3.IntegrityError:
         print(f"{name} is already in the database")   
 
-def add_subscriptions(cursor, subscriptions_id, name, num_of_subscribers, topic):
+
+def add_subscription(cursor, subscription_id, subscriber_id, magazine_id):
     try:
-        cursor.execute("INSERT INTO subscriptions (subscriptions_id, name_of_subscription, total_revenue, publisher_id, magazine_id, topic) VALUES (?,?,?)", 
-                       (subscriptions_id, name_of_subscription, total_revenue, publisher_id, magazine_id, topic))
+        cursor.execute(
+            "INSERT INTO subscriptions (subscription_id, subscriber_id, magazine_id) VALUES (?,?,?)", 
+            (subscription_id, subscriber_id, magazine_id)
+        )
     except sqlite3.IntegrityError:
-        print(f"{name} is already in the database") 
+        print(f"Subscription {subscription_id} is already in the database") 
 
-#Connect to a new SQLite database
 
+# ---------------- DB SETUP ----------------
 try:
     with sqlite3.connect("../db/magazines.db") as conn:
         conn.execute("PRAGMA foreign_keys = 1") 
         cursor = conn.cursor()
-        cursor.execute("""
-                       CREATE TABLE IF NOT EXISTS publishers (
-                       publisher_id INTEGER PRIMARY KEY,
-                       name TEXT NOT NULL,
-                       topic TEXT
-                       )
-                       """)
-        
-        cursor.execute("""
-                       CREATE TABLE IF NOT EXISTS magazines (
-                       magazine_id INTEGER PRIMARY KEY,
-                       name TEXT NOT NULL UNIQUE,
-                       topic TEXT
-                       )
-                       """)
-        
-        cursor.execute("""
-                       CREATE TABLE IF NOT EXISTS subscribers (
-                       subscribers_id INTEGER PRIMARY KEY,
-                       name TEXT NOT NULL,
-                       num_of_subscribers INTEGER,
-                       topic TEXT
-                       )
-                       """)
-        
-        cursor.execute("""
-                       CREATE TABLE IF NOT EXISTS subscriptions (
-                       subscription_id INTEGER PRIMARY KEY,
-                       name_of_subscription TEXT NOT NULL UNIQUE,
-                       total_revenue INTEGER,
-                       publisher_id TEXT NOT NULL UNIQUE,
-                       magazine_id TEXT NOT NULL UNIQUE,
-                       FOREIGN KEY (publisher_id) REFERENCES publishers (publisher_id),
-                       FOREIGN KEY (magazine_id) REFERENCES magazines (magazine_id)
-                       )
-                       """)
-    conn.commit()
-        #print("Database created and connected successfully.") 
 
-    # The "with" statement closes the connection at the end of that block.  You could close it 
-    # explicitly with conn.close(), but in this case
-    # # the "with" statement takes care of that.
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS publishers (
+                publisher_id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL UNIQUE
+            )
+        """)
+        
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS magazines (
+                magazine_id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL UNIQUE,
+                publisher_id INTEGER NOT NULL,
+                topic TEXT,
+                FOREIGN KEY (publisher_id) REFERENCES publishers (publisher_id)
+            )
+        """)
+        
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS subscribers (
+                subscriber_id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                address TEXT
+            )
+        """)
+        
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS subscriptions (
+                subscription_id INTEGER PRIMARY KEY,
+                subscriber_id INTEGER NOT NULL,
+                magazine_id INTEGER NOT NULL,
+                FOREIGN KEY (subscriber_id) REFERENCES subscribers (subscriber_id),
+                FOREIGN KEY (magazine_id) REFERENCES magazines (magazine_id),
+                UNIQUE(subscriber_id, magazine_id)
+            )
+        """)
 
+        # ---------------- DATA ----------------
+        add_publisher(cursor, 1, "O'Reilly")
+        add_publisher(cursor, 2, "McGraw-Hill")
+        add_publisher(cursor, 3, "Men's Health")
+
+        add_magazine(cursor, 1, "Wired", 1, "Tech")
+        add_magazine(cursor, 2, "Women's Health", 3, "Health")
+        add_magazine(cursor, 3, "Fortune", 2, "Business")
+
+        add_subscriber(cursor, 1, "Daniel Diaz", "Santa Monica, CA")
+        add_subscriber(cursor, 2, "John Smith", "Los Angeles, CA")
+        add_subscriber(cursor, 3, "Jane Doe", "Long Beach, CA")
+
+        add_subscription(cursor, 1, 1, 1)  # Daniel -> Wired
+        add_subscription(cursor, 2, 2, 3)  # John -> Fortune
+        add_subscription(cursor, 3, 3, 2)  # Jane -> Women's Health
+
+        conn.commit()
 
 except Exception as e:
     print(f"An unexpected error occurred: {e}")
+
+
+cursor.execute("SELECT * FROM subscribers")
+cursor.execute("SELECT * FROM magazines ORDER BY name DESC")
+
+subscriber_table = cursor.fetchall()
+for row in result:
+     print(row)
