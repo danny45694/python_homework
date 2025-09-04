@@ -1,15 +1,14 @@
 import sqlite3
 
 # ---------------- ADD FUNCTIONS ----------------
-def add_publisher(cursor, publisher_id, name):
+def add_publisher(cursor, publisher_id, name, topic):
     try:
         cursor.execute(
-            "INSERT INTO publishers (publisher_id, name) VALUES (?, ?)", 
-            (publisher_id, name)
+            "INSERT INTO publishers (publisher_id, name, topic) VALUES (?, ?, ?)", 
+            (publisher_id, name, topic)
         )
     except sqlite3.IntegrityError:
         print(f"{name} is already in the database")    
-
 
 def add_magazine(cursor, magazine_id, name, publisher_id, topic):
     try: 
@@ -51,6 +50,7 @@ try:
             CREATE TABLE IF NOT EXISTS publishers (
                 publisher_id INTEGER PRIMARY KEY,
                 name TEXT NOT NULL UNIQUE
+                topic TEXT NOT NULL
             )
         """)
         
@@ -63,7 +63,7 @@ try:
                 FOREIGN KEY (publisher_id) REFERENCES publishers (publisher_id)
             )
         """)
-        
+
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS subscribers (
                 subscriber_id INTEGER PRIMARY KEY,
@@ -84,12 +84,15 @@ try:
         """)
 
         # ---------------- DATA ----------------
-        add_publisher(cursor, 1, "O'Reilly")
-        add_publisher(cursor, 2, "McGraw-Hill")
-        add_publisher(cursor, 3, "Men's Health")
+        add_publisher(cursor, 1, "Super Tech Magazine", "Tech")
+        add_publisher(cursor, 2, "Super Biz", "Business")
+        add_publisher(cursor, 3, "Salud!", "Health")
 
         add_magazine(cursor, 1, "Wired", 1, "Tech")
+        add_magazine(cursor, 4, "Wireless", 1, "Tech")
         add_magazine(cursor, 2, "Women's Health", 3, "Health")
+        add_magazine(cursor, 5, "Getting swole", 3, "Health")
+        add_magazine(cursor, 6, "buybizsell", 2, "Business")
         add_magazine(cursor, 3, "Fortune", 2, "Business")
 
         add_subscriber(cursor, 1, "Daniel Diaz", "Santa Monica, CA")
@@ -107,19 +110,28 @@ except Exception as e:
 
 
 all_info_subscribers = ("SELECT * FROM subscribers")
-retrieve_magazines = ("SELECT * FROM magazines ORDER BY name DESC")
+retrieve_magazines = ("SELECT * FROM magazines ORDER BY name")
+
+
+        #------------------------------------------
 
 join_task = ("""
-               SELECT magazine.magazine_id, magazine.name,AS magazine_name, magazine.topic 
-               FROM magazines 
-               JOIN publishers p ON magazine.publisher_id = publisher.publisher.id 
+               SELECT magazine_topic, name FROM magazines
+               FROM owned
+               JOIN publishers ON magazine.publisher_id = publisher.publisher.id 
                WHERE publisher.name = ?;
                
                """)
 
+
+
+        #------------------------------------------
+
+
+
 cursor.execute(all_info_subscribers)
 cursor.execute(retrieve_magazines)
-cursor.execute(join_task("O'Reilly"))
+cursor.execute(join_task)
 results = cursor.fetchall()
 
 for row in results:
