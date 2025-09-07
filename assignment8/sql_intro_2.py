@@ -37,14 +37,14 @@ def add_line_items(cursor, line_item_id, quantity, product_id, product_name, pri
     try:
         cursor.execute("INSERT INTO line_items (line_item_id, quantity, product_id, product_name, price) VALUES (?,?,?,?,?)", (line_item_id, quantity, product_id, product_name, price))
     except sqlite3.IntegrityError:
-        print(f"{name} is already in the database.")
+        print(f"{product_name} is already in the database.")
 
 
 def add_products(cursor, product_id, product_name, price):
     try:
         cursor.execute("INSERT INTO products (product_id, product_name, price) VALUES (?,?,?)", (product_id, product_name, price))
     except sqlite3.IntegrityError:
-        print(f"{name} is already in the database.")
+        print(f"{product_name} is already in the database.")
 
 
 
@@ -75,13 +75,12 @@ with sqlite3.connect("../db/sql_intro_2.py") as conn:
 
 
 
-  sql_statement = """
+sql_statement = """
         SELECT line_item_id, quantity, product_id, product_name, price
         FROM line_items
-        JOIN 
-        
-        
+        LEFT JOIN products ON line_items.product_id = products.product_id
         """
 
 #Read into dataframe
-    df = pd.read_sql_query(sql_statement, conn)
+df = pd.read_sql_query(sql_statement, conn)
+
