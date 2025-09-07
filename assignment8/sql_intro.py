@@ -20,7 +20,7 @@ def add_magazine(cursor, magazine_id, name, publisher_id):
         print(f"{name} is already in the database")   
 
 
-def add_subscriber(cursor, subscriber_id, name, address):
+def add_subscribers(cursor, subscriber_id, name, address):
     try:
         cursor.execute(
             "INSERT INTO subscribers (subscriber_id, name, address) VALUES (?,?,?)", 
@@ -94,9 +94,9 @@ try:
         add_magazine(cursor, 6, "buybizsell", 2)
         add_magazine(cursor, 3, "Fortune", 2)
 
-        add_subscriber(cursor, 1, "Daniel Diaz", "Santa Monica, CA")
-        add_subscriber(cursor, 2, "John Smith", "Los Angeles, CA")
-        add_subscriber(cursor, 3, "Jane Doe", "Long Beach, CA")
+        add_subscribers(cursor, 1, "Daniel Diaz", "Santa Monica, CA")
+        add_subscribers(cursor, 2, "John Smith", "Los Angeles, CA")
+        add_subscribers(cursor, 3, "Jane Doe", "Long Beach, CA")
 
         add_subscription(cursor, 1, 1, 1)  # Daniel -> Wired
         add_subscription(cursor, 2, 2, 3)  # John -> Fortune
@@ -108,18 +108,29 @@ except Exception as e:
     print(f"An unexpected error occurred: {e}")
 
 
-#all_info_subscriber = ("SELECT * FROM subscriber")
+all_info_subscriber = ("SELECT * FROM subscribers")
 retrieve_magazines = ("SELECT * FROM magazines ORDER BY name")
 
+join_task = """
+
+SELECT m.magazine_id, m.name AS magazine, p.name AS publisher
+FROM magazines AS m
+JOIN publishers AS p ON p.publisher_id = m.publisher_id
+WHERE p.name = ?
+ORDER BY m.name;
+"""
+
+print(all_info_subscriber)
+print(retrieve_magazines)
 
 
 
+cursor.execute(all_info_subscriber)
+cursor.execute(retrieve_magazines)
+cursor.execute(join_task, ("Super Tech Magazine",))
+results = cursor.fetchall()
 
+print(results)
 
-#cursor.execute(all_info_subscriber)
-#cursor.execute(retrieve_magazines)
-#cursor.execute(join_task)
-#results = cursor.fetchall()
-
-#for row in results:
- #   print(row)
+for row in results:
+    print(row)
