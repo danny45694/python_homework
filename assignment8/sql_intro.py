@@ -10,11 +10,11 @@ def add_publisher(cursor, publisher_id, name, topic):
     except sqlite3.IntegrityError:
         print(f"{name} is already in the database")    
 
-def add_magazine(cursor, magazine_id, name, publisher_id, topic):
+def add_magazine(cursor, magazine_id, name, publisher_id):
     try: 
         cursor.execute(
-            "INSERT INTO magazines (magazine_id, name, publisher_id, topic) VALUES (?,?,?,?)", 
-            (magazine_id, name, publisher_id, topic)
+            "INSERT INTO magazines (magazine_id, name, publisher_id) VALUES (?,?,?)", 
+            (magazine_id, name, publisher_id)
         )
     except sqlite3.IntegrityError:
         print(f"{name} is already in the database")   
@@ -49,8 +49,8 @@ try:
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS publishers (
                 publisher_id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL UNIQUE
-                topic TEXT NOT NULL
+                name TEXT NOT NULL UNIQUE,
+                topic TEXT NOT NULL UNIQUE
             )
         """)
         
@@ -59,7 +59,6 @@ try:
                 magazine_id INTEGER PRIMARY KEY,
                 name TEXT NOT NULL UNIQUE,
                 publisher_id INTEGER NOT NULL,
-                topic TEXT,
                 FOREIGN KEY (publisher_id) REFERENCES publishers (publisher_id)
             )
         """)
@@ -88,12 +87,12 @@ try:
         add_publisher(cursor, 2, "Super Biz", "Business")
         add_publisher(cursor, 3, "Salud!", "Health")
 
-        add_magazine(cursor, 1, "Wired", 1, "Tech")
-        add_magazine(cursor, 4, "Wireless", 1, "Tech")
-        add_magazine(cursor, 2, "Women's Health", 3, "Health")
-        add_magazine(cursor, 5, "Getting swole", 3, "Health")
-        add_magazine(cursor, 6, "buybizsell", 2, "Business")
-        add_magazine(cursor, 3, "Fortune", 2, "Business")
+        add_magazine(cursor, 1, "Wired", 1)
+        add_magazine(cursor, 4, "Wireless", 1)
+        add_magazine(cursor, 2, "Women's Health", 3)
+        add_magazine(cursor, 5, "Getting swole", 3)
+        add_magazine(cursor, 6, "buybizsell", 2)
+        add_magazine(cursor, 3, "Fortune", 2)
 
         add_subscriber(cursor, 1, "Daniel Diaz", "Santa Monica, CA")
         add_subscriber(cursor, 2, "John Smith", "Los Angeles, CA")
@@ -109,30 +108,18 @@ except Exception as e:
     print(f"An unexpected error occurred: {e}")
 
 
-all_info_subscribers = ("SELECT * FROM subscribers")
+#all_info_subscriber = ("SELECT * FROM subscriber")
 retrieve_magazines = ("SELECT * FROM magazines ORDER BY name")
 
 
-        #------------------------------------------
-
-join_task = ("""
-               SELECT magazine_topic, name FROM magazines
-               FROM owned
-               JOIN publishers ON magazine.publisher_id = publisher.publisher.id 
-               WHERE publisher.name = ?;
-               
-               """)
 
 
 
-        #------------------------------------------
 
+#cursor.execute(all_info_subscriber)
+#cursor.execute(retrieve_magazines)
+#cursor.execute(join_task)
+#results = cursor.fetchall()
 
-
-cursor.execute(all_info_subscribers)
-cursor.execute(retrieve_magazines)
-cursor.execute(join_task)
-results = cursor.fetchall()
-
-for row in results:
-    print(row)
+#for row in results:
+ #   print(row)
