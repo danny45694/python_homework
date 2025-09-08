@@ -84,9 +84,25 @@ sql_statement = """
         """
 
 #-------------- Read into dataframe --------------
-df = pd.read_sql_query(sql_statement, conn)
+with sqlite3.connect("../db/lesson.db") as conn:   
+    df = pd.read_sql_query(sql_statement, conn)
 
 print(df)
 
 df['total'] = df['quantity'] * df['price']
 print(df.head(5))
+
+summary = (
+    df.groupby('product_id', as_index=False)
+      .agg(
+          line_item_id=('line_item_id', 'count'),
+          total=('total', 'sum'),
+          product_name=('product_name', 'first')
+      )
+)
+
+
+summary = summary.sort_values('product_name', kind='stable').reset_index(drop=True)
+print(summary.head(5))
+summary.to_csv("order_summary.csv", index=False)
+print("Wrote order_summary.csv")
