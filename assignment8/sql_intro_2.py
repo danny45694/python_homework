@@ -87,3 +87,6 @@ sql_statement = """
 df = pd.read_sql_query(sql_statement, conn)
 
 print(df)
+
+df['total'] = df['quantity'] * df['price']
+print(df.head(5))
