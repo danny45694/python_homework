@@ -4,9 +4,8 @@ with sqlite3.connect("../db/lesson.db") as conn:
     cursor = conn.cursor()
 
 # Join the tables
-total_price =  """ WITH 
-    join_tables AS (
-    SELECT orders, products, line_items
+total_price =  """ WITH joined AS (
+    SELECT order_id, products, line_items
     FROM orders
     JOIN line_items ON orders.order_id = line_items.order_id
     JOIN products ON products.product_id = line_items.product_id
