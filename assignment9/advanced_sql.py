@@ -85,18 +85,16 @@ ORDER BY li.line_item_id;
 
 
 #-------------------------------TASK4------------------------------------
-print("\nTask 4: Employees with more than 5 orders")
-task4_query = """
-SELECT e.employee_id, e.first_name, e.last_name, COUNT(o.order_id) AS order_count
+
+task4 = """
+SELECT
+  e.employee_id,
+  e.first_name,
+  e.last_name,
+  COUNT(o.order_id) AS order_count
 FROM employees AS e
-JOIN orders AS o ON e.employee_id = o.employee_id
-GROUP BY e.employee_id
-HAVING COUNT(o.order_id) > 5;
+JOIN orders    AS o ON o.employee_id = e.employee_id
+GROUP BY e.employee_id, e.first_name, e.last_name
+HAVING COUNT(o.order_id) > 5
+ORDER BY order_count DESC, e.last_name, e.first_name;
 """
-cursor.execute(task4_query)
-for row in cursor.fetchall():
-    print(row)  # (employee_id, first_name, last_name, order_count)
-
-
-# Close 
-conn.close()
