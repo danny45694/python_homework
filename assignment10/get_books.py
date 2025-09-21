@@ -1,5 +1,6 @@
 import pandas as pd
 import time
+import re
 import json
 import os 
 
@@ -9,30 +10,62 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 
 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-driver.get("https://durhamcounty.bibliocommons.com/v2/search?query=learning%20spanish&searchType=smart")
 
-time.sleep(5)
+url = "https://durhamcounty.bibliocommons.com/v2/search?query=learning%20spanish&searchType=smart"
 
-options = webdriver.ChromeOptions()
-options.add_argument('--headless') #Enable headless mode
-options.add_argument('--disable-gpu') #Recommended for Windows
-options.add_argument('--window-size=1920x1080') #Set window size
+driver.get(url)
 
-driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),options=options)
+time.sleep(3)
 
+#------------------------------TASK2-------------------------------------
 #ul class="results"
 #li class="row cp-search-result-item"
 #div class="cp-search-result-item-content"
-#h2 class = "cp-title" #Stores title
-#span class="cp-by-author-block --block" #stores author
+#span class="title-content" #Stores title
+#span class="a.author-link" #stores author
 #div class="manifestation-item-format-info-wrap"
+#span class="display-info-primary"
 
 
-li_elements = driver.find_elements(By.CLASS_NAME, 'row cp-search-result-item')  #Find Li elements I am looking for
-print(len(li_elements))
-#results = []
+li_elements = driver.find_elements(By.CSS_SELECTOR, "li.row.cp-search-result-item")  #Find Li elements I am looking for
+#print(f"print {len(li_elements)}")
 
-#for li in li_elements:
-    #title = driver.find_element(By.CLASS_NAME, 'cp-title')
-    #author = driver.find_element(By.CLASS_NAME, 'cp-author-link')
-    #year = li.find_element(By.CSS_SELECTOR, 'div.cp-format-year')
+results = []
+
+
+for li in li_elements:
+    
+    title = driver.find_element(By.CSS_SELECTOR, 'span.title-content').text
+    
+    authors = driver.find_elements(By.CSS_SELECTOR, 'a.author-link')
+    join_author = "; ".join([author.text for author in authors])
+    
+    year = li.find_element(By.CSS_SELECTOR, 'span.display-info-primary').text
+    pull_year = re.search(r'\d{4}', year)
+    format_year = int(pull_year.group())
+
+    dict = {
+    "Title": title,
+    "Author": join_author,
+    "Year": format_year,
+    }
+
+    results.append(dict)
+
+print(results[0])
+
+driver.quit()
+
+
+#----------------------------- TASK 4 ----------------------------
+df = pd.DataFrame(results)
+print(df)
+
+df.to_csv('get_books.csv', index=False)
+get_books_json = "get_books.json"
+
+df.to_json(get_books_json, orient='records', indent=4)
+print(get_books_json)
+
+
+
