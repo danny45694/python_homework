@@ -1,8 +1,6 @@
 import pandas as pd
 import time
 import re
-import json
-import os 
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -25,6 +23,9 @@ time.sleep(3)
 #span class="a.author-link" #stores author
 #div class="manifestation-item-format-info-wrap"
 #span class="display-info-primary"
+
+
+#----------------------------TASK 3----------------------------------
 
 
 li_elements = driver.find_elements(By.CSS_SELECTOR, "li.row.cp-search-result-item")  #Find Li elements I am looking for
@@ -52,7 +53,7 @@ for li in li_elements:
 
     results.append(dict)
 
-print(results[0])
+#print(results[0])
 
 driver.quit()
 
