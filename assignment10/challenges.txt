@@ -1,0 +1,10 @@
+The challenges I face in this task were the following:
+
+
+1. When pulling data during the scrape, I did not understand how to setup selenium/webdriver properly. I ended up repeating the command later in the script which caused the code to fail. It wasn't until I went back and deleted everything except what was laid out in the example that it worked. 
+
+2. The time module was not too hard to figure out. Somewhere in the lesson I read about adding a delay. A google search gave me the answer.
+
+3. Task 3 was difficult for me. Going off based on the lesson, it was unclear to me that row and cp-search-result-item are considered 2 separate classes. In addition, I learned the CSS_Selector was the more "powerful" method of the 3 available and it made it easier to find what I was looking for. From there, it was just a matter of pulling the data. For the year, I used a bit of regex to capture the year. It took a quick refresher but I got it. I still don't know what .group() does but it worked so hey!
+
+After that, I did a quick search to remember how to turn the dataframe to a csv and json. I ran the code and it output the files so mission accomplished I think.

@@ -1,0 +1,14 @@
+Which sections of the website are restricted for crawling?
+
+    A. It seems most of the pages are allowed so long as you do reasonable request rates. Friendly, low-speed bots are welcome viewing articles pages, but not dynamically-generated pages. REST API documentation and API mobileview are allowed for dynamic webpages. A large amount of staff pages are blocked too it seems.
+
+
+
+Are there specific rules for certain user agents?
+
+    A. Don't access the restricted areas and use Friendly, low-speed methods that don't cause a large number of hits in a short period of time.
+
+
+Reflect on why websites use robots.txt and write 2-3 sentences explaining its purpose and how it promotes ethical scraping. Put these in ethical_scraping.txt in your python_homework directory.
+
+    A. robots.txt purpose is to explain the rules wikipedia has set for scraping their site. It gives Robots rules they must abide by or risk being banned. These rules are integral to the security and stability of the website so it important to adhere to them.
